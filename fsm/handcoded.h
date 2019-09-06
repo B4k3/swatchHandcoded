@@ -3,10 +3,10 @@
 
 
 CLASS(Swatch)
-	State state_;
-	State source_;
+	enum State state_;
+	//enum State source_;
 METHODS
-	Swatch *SwatchCtor_(Swatch *me, PState initial);
+	Swatch *SwatchCtor_(Swatch *me);
 	void SwatchXtor_(Swatch *me);
 
 	void SwatchInit(Swatch *me);
