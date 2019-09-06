@@ -153,6 +153,7 @@ void UpdateMode(unsigned char om, unsigned char m)
 	}
 }
 
+
 void strencode2digit(char *str, int digit)
 {
 	str[2]=0;
