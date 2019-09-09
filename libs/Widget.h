@@ -13,7 +13,7 @@
 
 
 typedef enum  {
-	BACKGROUND, BUTTONICON, TEXT, IMAGE
+	BACKGROUND, BUTTONICON, BUTTONAREA, TEXT, TEXTSEPARATOR, IMAGE
 } WidgetType;
 
 typedef struct {
@@ -27,8 +27,13 @@ typedef struct {
 } ButtonIcon;
 
 typedef struct {
+	Event	onpress;
+}ButtonArea;
+
+typedef struct {
 	sFONT *font;
 	unsigned short int	color;
+	unsigned char *background;
 } Text;
 
 typedef struct {

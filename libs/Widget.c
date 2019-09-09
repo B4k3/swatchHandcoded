@@ -96,7 +96,17 @@ unsigned char WPrint(Widget *w, char *s)
 		return 0;
 }
 
-unsigned char Wclear
+unsigned char Wclear(Widget *w){
+	char *imgptr = 0;
+
+		if(w->wt == TEXT)
+			imgptr = txtinfo(w)->background;
+		if(imgptr != 0){
+			LCD_DrawPicture(w->xl, w->yt, w->xw, w->yh, imgptr);
+			return 1;
+		}
+		return 0;
+}
 
 
 
