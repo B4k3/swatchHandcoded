@@ -96,6 +96,8 @@ unsigned char WPrint(Widget *w, char *s)
 		return 0;
 }
 
+unsigned char Wclear
+
 
 
 
