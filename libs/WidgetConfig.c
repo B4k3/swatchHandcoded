@@ -61,5 +61,6 @@ const Widget MyWatchScr[NUMWIDGETS] = {
 		{243, 70, 40, 40, TEXT, (void *)&txt},
 		{80, 70, 40, 40, TEXT, (void *)&txt},
 		{149, 70, 40, 40, TEXT, (void *)&txt},
+		{210, 70, 40, 40, TEXT, (void *)&txt},
 };
 
