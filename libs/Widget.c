@@ -9,6 +9,8 @@
 #include "WidgetConfig.h"
 #include "Event.h"
 #include "debug.h"
+#include "stm32f4_discovery_lcd.c"
+
 
 unsigned char contains(Widget *w, TPoint *point){
 	if	((point->x >= w->xl) && (point->x <= w->xl + w->xw) &&
@@ -36,7 +38,7 @@ unsigned char OnTouch(const Widget ws[], TPoint *press){
 	return res;
 }
 
-unsigned char DrawInit(Widget ws[])
+unsigned char DrawInit(const Widget ws[])
 {
 	unsigned char i;
 	for(i=0; i<NUMWIDGETS; i++) {
@@ -45,7 +47,7 @@ unsigned char DrawInit(Widget ws[])
 	return 1;
 }
 
-unsigned char DrawOn(Widget *w)
+unsigned char DrawOn(const Widget *w)
 {
 	char *imgptr = 0;
 
@@ -65,7 +67,7 @@ unsigned char DrawOn(Widget *w)
 		return 0;
 }
 
-unsigned char DrawOff(Widget *w)
+unsigned char DrawOff(const Widget *w)
 {
 	char *imgptr = 0;
 
@@ -85,7 +87,7 @@ unsigned char DrawOff(Widget *w)
 		return 0;
 }
 
-unsigned char WPrint(Widget *w, char *s)
+unsigned char WPrint(const Widget *w, char *s)
 {
 	if (w->wt == TEXT) {
 		LCD_SetTextColor(txtinfo(w)->color);

@@ -7,12 +7,12 @@
 
 #include "Widget.h"
 #include "WidgetConfig.h"
-#include "pictures.h"
+#include "../graphics/pictures.h"
 #include <stdio.h>
 #include "stm32f4_discovery_lcd.h"
 #include "fonts.h"
 
-/*ButtonIcon buttontime = {
+ButtonIcon buttontime = {
 		icontime_on, icontime_off, TIMEMODE
 };
 
@@ -42,18 +42,21 @@ Text txt = {
 
 Image backg = {
 	ImageBuffer
-};*/
+};
 
-ButtonArea btnMode = {CHANGEMODE};
+/*ButtonArea btnMode = {CHANGEMODE};
 ButtonArea btnPlus = {PLUS};
 ButtonArea btnMinus = {MINUS};
-Text txt = {&Font32x48, Black};
+Text txt = {&Font32x48, Black};*/
 
 const Widget MyWatchScr[NUMWIDGETS] = {
 		{0, 0, 320, 240, BACKGROUND, (void *)&backg},
-		{30, 188, 39, 43, BUTTONAREA, (void *)&btnmode},
-		{98, 188, 39, 43, BUTTONAREA, (void *)&btnPlus},
-		{169, 188, 38, 43, BUTTONAREA, (void *)&btnMinus},
+		{30, 188, 39, 43, BUTTONICON, (void *)&buttontime},
+		{98, 188, 39, 43, BUTTONICON, (void *)&buttontimeset},
+		{169, 188, 38, 43, BUTTONICON, (void *)&buttonalarm},
+		{244, 188, 35, 43, BUTTONICON, (void *)&buttonswatch},
+		{270, 30, 40, 40, BUTTONICON, (void *)&buttonplus},
+		{270, 105, 40, 40, BUTTONICON, (void *)&buttonminus},
 //		{26, 76, 100, 32, RECTANGLE, (void *)&rectangle}
 		{29, 70, 40, 40, TEXT, (void *)&txt},
 		{99, 70, 40, 40, TEXT, (void *)&txt},
@@ -61,6 +64,5 @@ const Widget MyWatchScr[NUMWIDGETS] = {
 		{243, 70, 40, 40, TEXT, (void *)&txt},
 		{80, 70, 40, 40, TEXT, (void *)&txt},
 		{149, 70, 40, 40, TEXT, (void *)&txt},
-		{210, 70, 40, 40, TEXT, (void *)&txt},
 };
 

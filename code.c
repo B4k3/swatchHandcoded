@@ -46,22 +46,22 @@
 #include "stm32f4_discovery_lcd.h"
 #include "stm32f4xx.h"
 
-#include "STMPE811QTR.h"
-#include "pictures.h"
-#include "Widget.h"
-#include "WidgetConfig.h"
-#include "Touch.h"
-#include "Event.h"
+#include "libs/STMPE811QTR.h"
+#include "graphics/pictures.h"
+#include "libs/Widget.h"
+#include "libs/WidgetConfig.h"
+#include "libs/Touch.h"
+#include "libs/Event.h"
 #include "fsm/handcoded.h"
 #include "libs/types.h"
-#include "lcd_add.h"
-#include "fonts.h"
-#include "debug.h"
+#include "libs/lcd_add.h"
+#include "libs/fonts.h"
+#include "libs/debug.h"
 
 
 
-uint8_T hours=0, minutes=0, seconds=0, tenths=0, mode;
-boolean_T  Events_Button[8] = {0, 0, 0, 0, 0, 0, 0, 0}; //Events
+uint8_t hours=0, minutes=0, seconds=0, tenths=0, mode;
+bool_t  Events_Button[8] = {0, 0, 0, 0, 0, 0, 0, 0}; //Events
 Swatch SW;
 
 /*
@@ -165,29 +165,26 @@ void strencode2digit(char *str, int digit)
 void CheckEvents(){
 	if (IsEvent(PLUS)) 			Events_Button[0] = 1;
 	if (IsEvent(MINUS)) 		Events_Button[1] = 1;
-	if (IsEvent(TIMEMODE)) 		Events_Buttonf[2] = 1;
+	if (IsEvent(TIMEMODE)) 		Events_Button[2] = 1;
 	if (IsEvent(TIMESETMODE)) 	Events_Button[3] = 1;
 	if (IsEvent(ALARMMODE)) 	Events_Button[4] = 1;
 	if (IsEvent(SWATCHMODE)) 	Events_Button[5] = 1;
 
 }
 void UncheckEvents(){
-	for (uint8_T i = 0; i < 8; i++)
+	uint8_t i;
+	for (i = 0; i < 8; i++)
     {
       	Events_Button[i] = 0;
     };
 }
 TASK(TaskClock)
 {
-	time_zcount();
+	//time_zcount();
 //	debuginfo(6, Events_Button[0], Events_Button[2], Events_Button[3]);
 	SwatchDispatch(&SW);
 	UncheckEvents();
 	ClearEvents();
-
-	if (SW->state != SW->old_state) {
-		ChangeGUI(SW->state);
-	}
 }
 
 /**

@@ -4,10 +4,10 @@ uint8_T abs_hours;		// absolute hour count
 uint8_T abs_minutes;	// absolute minutes count
 uint8_T abs_seconds;	// absolute seconds count
 uint8_T abs_tenths;		// absolute tenths count
-extern boolean_T  Events_Button[8];
+extern bool_t  Events_Button[8];
 
 
-Signal decodesignal(Events_Button){
+Signal decodesignal(bool_t *Events_Button){
     uint8_T i;
     for (i = 0; i < 6; i++)
     {
@@ -152,8 +152,8 @@ void SwatchInit(Swatch *me)
 
 void SwatchTran_(Swatch *me, State nextstate)
 {   
-    me->old_state = me->state;
-	me->state = nextstate;
+    me->old_state = me->state_;
+	me->state_ = nextstate;
 }
 
 
@@ -195,4 +195,7 @@ void time_count() {
 	}
 }
 
+void TimeSet_Entry(Swatch *me){
+
+}
 

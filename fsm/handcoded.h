@@ -4,8 +4,8 @@
 
 //---------------STRUCTURES AND METHODS---------------
 CLASS(Swatch)
-	enum State old_state;
-	enum State state_;
+	State old_state;
+	State state_;
 
 	uint8_t hours;
 	uint8_t minutes;
@@ -28,8 +28,7 @@ METHODS
 
 	void SwatchInit(Swatch *me);
 	void SwatchDispatch(Swatch *me);
-	void SwatchTran_(Swatch *me, enum State nextstate);
+	void SwatchTran_(Swatch *me, State nextstate);
 
-	State Swatch_top(Swatch *me, enum Event const *e);
-	Signal decodesignal(boolean_T d[]);
+	Signal decodesignal(bool_t *Events_Button);
 END_CLASS
