@@ -10,10 +10,11 @@
 #include "Event.h"
 #include "Touch.h"
 #include "fonts.h"
+#include "stm32f4_discovery_lcd.h"
 
 
 typedef enum  {
-	BACKGROUND, BUTTONICON, BUTTONAREA, TEXT, IMAGE
+	BACKGROUND, BUTTONICON, TEXT, IMAGE
 } WidgetType;
 
 typedef struct {
@@ -27,13 +28,8 @@ typedef struct {
 } ButtonIcon;
 
 typedef struct {
-	Event	onpress;
-}ButtonArea;
-
-typedef struct {
 	sFONT *font;
 	unsigned short int	color;
-	//unsigned char *background;
 } Text;
 
 typedef struct {

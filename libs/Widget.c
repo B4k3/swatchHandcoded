@@ -11,7 +11,6 @@
 #include "debug.h"
 #include "stm32f4_discovery_lcd.c"
 
-
 unsigned char contains(Widget *w, TPoint *point){
 	if	((point->x >= w->xl) && (point->x <= w->xl + w->xw) &&
 		 (point->y >= w->yt) && (point->y <= w->yt + w->yh)) {
@@ -91,25 +90,13 @@ unsigned char WPrint(const Widget *w, char *s)
 {
 	if (w->wt == TEXT) {
 		LCD_SetTextColor(txtinfo(w)->color);
-		LCD_SetFont(txtinfo(w)->font);
+		//LCD_SetFont(txtinfo(w)->font);
 		LCD_DisplayStringXY(w->xl, w->yt, s);
 		return 1;
 	} else
 		return 0;
 }
 
-/*unsigned char Wclear(Widget *w){
-	char *imgptr = 0;
-
-		if(w->wt == TEXT)
-			imgptr = txtinfo(w)->background;
-		if(imgptr != 0){
-			LCD_DrawPicture(w->xl, w->yt, w->xw, w->yh, imgptr);
-			return 1;
-		}
-		return 0;
-}
-*/
 
 
 

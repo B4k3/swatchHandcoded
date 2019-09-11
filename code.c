@@ -48,22 +48,23 @@
 
 #include "libs/STMPE811QTR.h"
 #include "graphics/pictures.h"
-#include "graphics/graphic.h"
 #include "libs/Widget.h"
 #include "libs/WidgetConfig.h"
 #include "libs/Touch.h"
 #include "libs/Event.h"
-#include "fsm/handcoded.h"
-#include "libs/types.h"
+//#include "SWatchCB.h"
 #include "libs/lcd_add.h"
 #include "libs/fonts.h"
 #include "libs/debug.h"
+#include "libs/types.h"
 
+/* State variables for generated code */
+//RT_MODEL_SWatchCB_T SWatchCB_state;
+//B_SWatchCB_T bIO;
+//PrevZCX_SWatchCB_T ZCstate;
+//DW_SWatchCB_T dw;
 
-
-uint8_t hours=0, minutes=0, seconds=0, tenths=0, mode;
-bool_t  Events_Button[8] = {0, 0, 0, 0, 0, 0, 0, 0}; //Events
-Swatch SW;
+uint8_T hours=0, minutes=0, seconds=0, tenths=0, mode;
 
 /*
  * SysTick ISR2
@@ -79,8 +80,6 @@ ISR2(systick_handler)
  */
 TASK(TaskLCD)
 {
-	CheckEvents();
-
 	unsigned int px, py;
 	TPoint p;
 	if (GetTouch_SC_Async(&px, &py)) {
@@ -155,7 +154,6 @@ void UpdateMode(unsigned char om, unsigned char m)
 	}
 }
 
-
 void strencode2digit(char *str, int digit)
 {
 	str[2]=0;
@@ -163,29 +161,48 @@ void strencode2digit(char *str, int digit)
 	str[1]=digit%10+'0';
 }
 
-void CheckEvents(){
-	if (IsEvent(PLUS)) 			Events_Button[0] = 1;
-	if (IsEvent(MINUS)) 		Events_Button[1] = 1;
-	if (IsEvent(TIMEMODE)) 		Events_Button[2] = 1;
-	if (IsEvent(TIMESETMODE)) 	Events_Button[3] = 1;
-	if (IsEvent(ALARMMODE)) 	Events_Button[4] = 1;
-	if (IsEvent(SWATCHMODE)) 	Events_Button[5] = 1;
-
-}
-void UncheckEvents(){
-	uint8_t i;
-	for (i = 0; i < 8; i++)
-    {
-      	Events_Button[i] = 0;
-    };
-}
 TASK(TaskClock)
 {
-	//time_zcount();
-//	debuginfo(6, Events_Button[0], Events_Button[2], Events_Button[3]);
-	SwatchDispatch(&SW);
-	UncheckEvents();
+	unsigned char i;
+	static int oldmode=8;
+	static unsigned char oh=99, om=99, os=99;
+	char tstr[3];
+
+//	debuginfo(6, button[0], button[2], button[3]);
+
+	//SWatchCB_step(&SWatchCB_state,&hours, &minutes, &seconds, &tenths, &mode);
+
 	ClearEvents();
+
+	if (hours!=oh) {
+		strencode2digit(tstr, (int)hours);
+		LCD_SetTextColor(Black);
+		LCD_SetBackColor(Black);
+		LCD_DrawFullRect(29, 70, 62, 48);
+		WPrint(&MyWatchScr[HRSSTR], tstr);
+		oh=hours;
+	}
+	if (minutes!=om) {
+		strencode2digit(tstr, (int)minutes);
+		LCD_SetTextColor(Black);
+		LCD_SetBackColor(Black);
+		LCD_DrawFullRect(99, 70, 62, 48);
+		WPrint(&MyWatchScr[MINSTR], tstr);
+		om=minutes;
+	}
+	if (seconds!= os) {
+		strencode2digit(tstr, (int)seconds);
+		LCD_SetTextColor(Black);
+		LCD_SetBackColor(Black);
+		LCD_DrawFullRect(168, 70, 62, 48);
+		WPrint(&MyWatchScr[SECSTR], tstr);
+		os=seconds;
+	}
+
+	if (mode != oldmode) {
+		UpdateMode(oldmode, mode);
+		oldmode = mode;
+	}
 }
 
 /**
@@ -203,14 +220,16 @@ int main(void)
 {
 	//GPIO_InitTypeDef GPIO_InitStructure;
 
-
 	SystemInit();
   /*Initializes Erika related stuffs*/
 	EE_system_init();
 
+	//SWatchCB_state.ModelData.blockIO = &bIO;
+	//SWatchCB_state.ModelData.prevZCSigState = &ZCstate;
+	//SWatchCB_state.ModelData.dwork = &dw;
 
   /* init state machine */
-	SwatchInit(&SW);
+	//SWatchCB_initialize(&SWatchCB_state,&hours, &minutes, &seconds, &tenths, &mode);
 
 	/*Initialize systick */
 	EE_systick_set_period(MILLISECONDS_TO_TICKS(1, SystemCoreClock));
@@ -231,10 +250,9 @@ int main(void)
 
 	/* Draw the background */
 	DrawInit(MyWatchScr);
-	init_screen();
-	//LCD_SetTextColor(Black);
-	//LCD_SetBackColor(White);
-	//LCD_DrawFullRect(28, 62, 200, 56);
+	LCD_SetTextColor(Black);
+	LCD_SetBackColor(Black);
+	LCD_DrawFullRect(28, 62, 200, 56);
 	WPrint(&MyWatchScr[SEP1STR], ":");
 	WPrint(&MyWatchScr[SEP2STR], ":");
 
@@ -242,7 +260,7 @@ int main(void)
 	 * and after that periodically
 	 * */
 	SetRelAlarm(AlarmTaskLCD, 10, 50);
-	SetRelAlarm(AlarmTaskClock, 10, 1000);
+	SetRelAlarm(AlarmTaskClock, 10, 100);
 
   /* Forever loop: background activities (if any) should go here */
 	for (;;) { 

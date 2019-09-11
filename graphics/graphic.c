@@ -30,7 +30,7 @@ void decode_singledigitnumber(uint8_t digit,char* str){
 void init_screen(){
 	WPrint(&MyWatchScr[SEP1STR], ":");
 	WPrint(&MyWatchScr[SEP2STR], ":");
-	update_interface(TimeDisplay,0,0,0,0);
+	//update_interface(TimeDisplay,1,1,1,1);
 }
 
 void draw_hours(uint8_t hours){

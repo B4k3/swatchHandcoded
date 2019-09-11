@@ -1,14 +1,14 @@
 #include "handcoded.h";
 #include "../libs/types.h";
-uint8_T abs_hours;		// absolute hour count
-uint8_T abs_minutes;	// absolute minutes count
-uint8_T abs_seconds;	// absolute seconds count
-uint8_T abs_tenths;		// absolute tenths count
+uint8_t abs_hours;		// absolute hour count
+uint8_t abs_minutes;	// absolute minutes count
+uint8_t abs_seconds;	// absolute seconds count
+uint8_t abs_tenths;		// absolute tenths count
 extern bool_t  Events_Button[8];
 
 
 Signal decodesignal(bool_t *Events_Button){
-    uint8_T i;
+    uint8_t i;
     for (i = 0; i < 6; i++)
     {
         if(Events_Button[i])

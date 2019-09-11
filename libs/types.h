@@ -1,7 +1,6 @@
 #ifndef TYPES
 #define TYPES
 
-#define uint8_t unsigned char
 #define bool_t unsigned int
 
 typedef enum {Tick, plusButton, minusButton, timeMode, timeSetMode, alarmMode, swatchMode, stopWatchStart, stopWatchStop} Signal;
