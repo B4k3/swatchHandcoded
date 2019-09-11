@@ -53,6 +53,7 @@ CPU mySystem {
 			APP_SRC = "code.c";
 			APP_SRC = "libs/Touch.c";
 			APP_SRC = "graphics/pictures.c";
+			APP_SRC = "graphics/graphic.c";
 			APP_SRC = "libs/Event.c";
 			APP_SRC = "libs/Widget.c";
 			APP_SRC = "libs/WidgetConfig.c";

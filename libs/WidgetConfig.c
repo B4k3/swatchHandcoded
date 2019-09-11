@@ -37,7 +37,7 @@ ButtonIcon buttonminus = {
 };
 
 Text txt = {
-		&Font32x48, White
+		&Font32x48, Black
 };
 
 Image backg = {
@@ -50,7 +50,7 @@ ButtonArea btnMinus = {MINUS};
 Text txt = {&Font32x48, Black};*/
 
 const Widget MyWatchScr[NUMWIDGETS] = {
-		{0, 0, 320, 240, BACKGROUND, (void *)&backg},
+		{29, 70, 40, 40, TEXT, (void *)&txt}, //{0, 0, 320, 240, BACKGROUND, (void *)&backg},
 		{30, 188, 39, 43, BUTTONICON, (void *)&buttontime},
 		{98, 188, 39, 43, BUTTONICON, (void *)&buttontimeset},
 		{169, 188, 38, 43, BUTTONICON, (void *)&buttonalarm},

@@ -13,7 +13,7 @@
 
 
 typedef enum  {
-	BACKGROUND, BUTTONICON, BUTTONAREA, TEXT, TEXTSEPARATOR, IMAGE
+	BACKGROUND, BUTTONICON, BUTTONAREA, TEXT, IMAGE
 } WidgetType;
 
 typedef struct {
@@ -33,7 +33,7 @@ typedef struct {
 typedef struct {
 	sFONT *font;
 	unsigned short int	color;
-	unsigned char *background;
+	//unsigned char *background;
 } Text;
 
 typedef struct {

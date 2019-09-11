@@ -9,58 +9,11 @@ uint8_t dHours 	 = 0;
 uint8_t dMinutes = 0;
 uint8_t dSeconds = 0;
 uint8_t dTenths	 = 0;
-enum State actual_mode = TimeDisplay;
+State actual_mode = TimeDisplay;
 
 bool_t showTenths 	= 0;
 bool_t showSeconds	= 1;
 
-
-
-void init_screen(){
-	WPrint(&MyWatchScr[SEP1STR], ":");
-	WPrint(&MyWatchScr[SEP2STR], ":");
-}
-
-void draw_hour(uint8_t hours){
-	char str[3];
-
-	if(dHours != hours){
-		decode_twodigitnumber(hours,str);
-		Wclear(&MyWatchScr[HRSSTR]);
-		WPrint(&MyWatchScr[HRSSTR], hours);
-		dHours = hours;
-	}
-}
-
-void draw_minutes(uint8_t minutes){
-	char str[3];
-
-	if(dMinutes != minutes){
-		decode_twodigitnumber(minutes,str);
-		Wclear(&MyWatchScr[MINSTR]);
-		WPrint(&MyWatchScr[MINSTR], minutes);
-		dMinutes = minutes;
-	}
-}
-
-void draw_seconds(uint8_t seconds){
-	char str[3];
-
-	if(dSeconds != seconds){
-		decode_twodigitnumber(seconds,str);
-		Wclear(&MyWatchScr[SECSTR]);
-		WPrint(&MyWatchScr[SECSTR], seconds);
-		dSeconds = seconds;
-	}
-}
-
-void draw_tenths(uint8_t tenths){
-	char str[2];
-	decode_singledigitnumber(tenths,str);
-	Wclear(&MyWatchScr[TTSSTR]);
-	WPrint(&MyWatchScr[TTSSTR], tenths);
-	dTenths = tenths;
-}
 
 void decode_twodigitnumber(uint8_t digit,char* str){
 	str[2]=0;
@@ -73,6 +26,54 @@ void decode_singledigitnumber(uint8_t digit,char* str){
 	str[0] = digit%10+'0';
 }
 
+
+void init_screen(){
+	WPrint(&MyWatchScr[SEP1STR], ":");
+	WPrint(&MyWatchScr[SEP2STR], ":");
+	update_interface(TimeDisplay,0,0,0,0);
+}
+
+void draw_hours(uint8_t hours){
+	char str[3];
+
+	if(dHours != hours){
+		decode_twodigitnumber(hours,str);
+		//Wclear(&MyWatchScr[HRSSTR]);
+		WPrint(&MyWatchScr[HRSSTR], str);
+		dHours = hours;
+	}
+}
+
+void draw_minutes(uint8_t minutes){
+	char str[3];
+
+	if(dMinutes != minutes){
+		decode_twodigitnumber(minutes,str);
+		//Wclear(&MyWatchScr[MINSTR]);
+		WPrint(&MyWatchScr[MINSTR], str);
+		dMinutes = minutes;
+	}
+}
+
+void draw_seconds(uint8_t seconds){
+	char str[3];
+
+	if(dSeconds != seconds){
+		decode_twodigitnumber(seconds,str);
+		//Wclear(&MyWatchScr[SECSTR]);
+		WPrint(&MyWatchScr[SECSTR], str);
+		dSeconds = seconds;
+	}
+}
+
+void draw_tenths(uint8_t tenths){
+	char str[2];
+	decode_singledigitnumber(tenths,str);
+	//Wclear(&MyWatchScr[TTSSTR]);
+	WPrint(&MyWatchScr[TTSSTR], str);
+	dTenths = tenths;
+}
+
 void show_tenth(){
 	showTenths = 1;
 	WPrint(&MyWatchScr[SEP3STR], ".");
@@ -80,8 +81,8 @@ void show_tenth(){
 
 void hide_tenth(){
 	showTenths = 0;
-	Wclear(&MyWatchScr[SEP3STR]);
-	Wclear(&MyWatchScr[TTSSTR]);
+	//Wclear(&MyWatchScr[SEP3STR]);
+	//Wclear(&MyWatchScr[TTSSTR]);
 }
 
 void show_seconds(){
@@ -91,8 +92,8 @@ void show_seconds(){
 
 void hide_seconds(){
 	showSeconds = 0;
-	Wclear(&MyWatchScr[SEP2STR]);
-	Wclear(&MyWatchScr[SECSTR]);
+	//Wclear(&MyWatchScr[SEP2STR]);
+	//Wclear(&MyWatchScr[SECSTR]);
 }
 
 void switchMode(uint8_t mode){
@@ -136,7 +137,7 @@ void switchMode(uint8_t mode){
 	}
 }
 
-void update_interface(uint8_t mode, uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t tenths){
+void update_interface(State mode, uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t tenths){
 	if(mode != actual_mode)
 		switchMode(mode);
 	draw_hours(hours);

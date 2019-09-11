@@ -48,6 +48,7 @@
 
 #include "libs/STMPE811QTR.h"
 #include "graphics/pictures.h"
+#include "graphics/graphic.h"
 #include "libs/Widget.h"
 #include "libs/WidgetConfig.h"
 #include "libs/Touch.h"
@@ -230,9 +231,10 @@ int main(void)
 
 	/* Draw the background */
 	DrawInit(MyWatchScr);
-	LCD_SetTextColor(Black);
-	LCD_SetBackColor(Black);
-	LCD_DrawFullRect(28, 62, 200, 56);
+	init_screen();
+	//LCD_SetTextColor(Black);
+	//LCD_SetBackColor(White);
+	//LCD_DrawFullRect(28, 62, 200, 56);
 	WPrint(&MyWatchScr[SEP1STR], ":");
 	WPrint(&MyWatchScr[SEP2STR], ":");
 

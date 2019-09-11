@@ -98,7 +98,7 @@ unsigned char WPrint(const Widget *w, char *s)
 		return 0;
 }
 
-unsigned char Wclear(Widget *w){
+/*unsigned char Wclear(Widget *w){
 	char *imgptr = 0;
 
 		if(w->wt == TEXT)
@@ -109,7 +109,7 @@ unsigned char Wclear(Widget *w){
 		}
 		return 0;
 }
-
+*/
 
 
 
