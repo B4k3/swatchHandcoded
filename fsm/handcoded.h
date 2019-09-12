@@ -7,18 +7,18 @@ CLASS(Swatch)
 	State old_state;
 	State state_;
 
-	uint8_t hours;
-	uint8_t minutes;
-	uint8_t seconds;
-	uint8_t tenths;
+	uint8_T hours;
+	uint8_T minutes;
+	uint8_T seconds;
+	uint8_T tenths;
 
-	uint8_t alarm_hours;
-	uint8_t alarm_minutes;
+	uint8_T alarm_hours;
+	uint8_T alarm_minutes;
 
-	uint8_t stopwatch_hours;
-	uint8_t stopwatch_minutes;
-	uint8_t stopwatch_seconds;
-	uint8_t stopwatch_tenths;
+	uint8_T stopwatch_hours;
+	uint8_T stopwatch_minutes;
+	uint8_T stopwatch_seconds;
+	uint8_T stopwatch_tenths;
 
 	StopwatchState swatch_state;
 	//enum State source_;

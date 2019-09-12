@@ -1,27 +1,26 @@
 #include "../libs/Widget.h"
 #include "../libs/WidgetConfig.h"
 #include "../libs/types.h"
-
 #include "graphic.h"
 
 
-uint8_t dHours 	 = 0;
-uint8_t dMinutes = 0;
-uint8_t dSeconds = 0;
-uint8_t dTenths	 = 0;
+uint8_T dHours 	 = 0;
+uint8_T dMinutes = 0;
+uint8_T dSeconds = 0;
+uint8_T dTenths	 = 0;
 State actual_mode = TimeDisplay;
 
 bool_t showTenths 	= 0;
 bool_t showSeconds	= 1;
 
 
-void decode_twodigitnumber(uint8_t digit,char* str){
+void decode_twodigitnumber(uint8_T digit,char* str){
 	str[2]=0;
 	str[0]=digit/10+'0';
 	str[1]=digit%10+'0';
 }
 
-void decode_singledigitnumber(uint8_t digit,char* str){
+void decode_singledigitnumber(uint8_T digit,char* str){
 	str[1] = 0;
 	str[0] = digit%10+'0';
 }
@@ -33,7 +32,7 @@ void init_screen(){
 	//update_interface(TimeDisplay,1,1,1,1);
 }
 
-void draw_hours(uint8_t hours){
+void draw_hours(uint8_T hours){
 	char str[3];
 
 	if(dHours != hours){
@@ -44,7 +43,7 @@ void draw_hours(uint8_t hours){
 	}
 }
 
-void draw_minutes(uint8_t minutes){
+void draw_minutes(uint8_T minutes){
 	char str[3];
 
 	if(dMinutes != minutes){
@@ -55,7 +54,7 @@ void draw_minutes(uint8_t minutes){
 	}
 }
 
-void draw_seconds(uint8_t seconds){
+void draw_seconds(uint8_T seconds){
 	char str[3];
 
 	if(dSeconds != seconds){
@@ -66,7 +65,7 @@ void draw_seconds(uint8_t seconds){
 	}
 }
 
-void draw_tenths(uint8_t tenths){
+void draw_tenths(uint8_T tenths){
 	char str[2];
 	decode_singledigitnumber(tenths,str);
 	//Wclear(&MyWatchScr[TTSSTR]);

@@ -78,6 +78,7 @@ unsigned char DrawOff(const Widget *w)
 	case IMAGE:
 		imgptr = imginfo(w)->image;
 		break;
+	
 	}
 	if (imgptr != 0) {
 		LCD_DrawPicture(w->xl, w->yt, w->xw, w->yh, imgptr);

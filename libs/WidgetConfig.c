@@ -8,6 +8,7 @@
 #include "Widget.h"
 #include "WidgetConfig.h"
 #include "../graphics/pictures.h"
+#include "../graphics/graphic.h"
 #include <stdio.h>
 #include "stm32f4_discovery_lcd.h"
 #include "fonts.h"

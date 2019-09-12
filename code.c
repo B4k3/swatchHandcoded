@@ -52,6 +52,7 @@
 #include "libs/WidgetConfig.h"
 #include "libs/Touch.h"
 #include "libs/Event.h"
+
 //#include "SWatchCB.h"
 #include "libs/lcd_add.h"
 #include "libs/fonts.h"

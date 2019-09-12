@@ -23,6 +23,8 @@
 #define TTSSTR 10
 #define SEP1STR 11
 #define SEP2STR 12
+#define SEP3STR 13
+
 
 #define TIMEMODE 0x01
 #define TIMESETMODE 0x02
