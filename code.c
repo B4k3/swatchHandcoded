@@ -52,12 +52,14 @@
 #include "libs/WidgetConfig.h"
 #include "libs/Touch.h"
 #include "libs/Event.h"
+#include "fsm/handcoded.h"
 
 //#include "SWatchCB.h"
 #include "libs/lcd_add.h"
 #include "libs/fonts.h"
 #include "libs/debug.h"
 #include "libs/types.h"
+#include "graphics/graphic.h"
 
 /* State variables for generated code */
 //RT_MODEL_SWatchCB_T SWatchCB_state;
@@ -65,7 +67,10 @@
 //PrevZCX_SWatchCB_T ZCstate;
 //DW_SWatchCB_T dw;
 
-uint8_T hours=0, minutes=0, seconds=0, tenths=0, mode;
+Swatch mySwatch;
+
+uint8_T hours=0, minutes=0, seconds=0, tenths=0;
+State mode;
 
 /*
  * SysTick ISR2
@@ -90,14 +95,14 @@ TASK(TaskLCD)
 	}
 }
 
-void setTimeString(char *watchstr, uint8_T hours, uint8_T minutes, uint8_T seconds, uint8_T tenths, uint8_T mode)
+/*void setTimeString(char *watchstr, uint8_T hours, uint8_T minutes, uint8_T seconds, uint8_T tenths, uint8_T mode)
 {
 	sprintf(watchstr, "%2d:%2d:%2d", hours, minutes, seconds);
-}
+}*/
 /*
  * TASK Clock
  */
-unsigned char IsUpdateTime()
+/*unsigned char IsUpdateTime()
 {
 	unsigned char res;
 	static unsigned char oh=0, om=0, os=0;
@@ -121,7 +126,7 @@ void UpdateTime()
 	LCD_DrawFullRect(30, 76, 160, 32);
 
 /*	WPrint(&MyWatchScr[TIMESTR], watchstr); */
-}
+/*}
 
 void UpdateMode(unsigned char om, unsigned char m)
 {
@@ -161,21 +166,30 @@ void strencode2digit(char *str, int digit)
 	str[0]=digit/10+'0';
 	str[1]=digit%10+'0';
 }
-
+*/
 TASK(TaskClock)
 {
-	unsigned char i;
-	static int oldmode=8;
-	static unsigned char oh=99, om=99, os=99;
-	char tstr[3];
+	if (IsEvent(PLUS)) 			Events_Button[0] = 1;
+	if (IsEvent(MINUS)) 		Events_Button[1] = 1;
+	if (IsEvent(TIMEMODE)) 		Events_Button[2] = 1;
+	if (IsEvent(TIMESETMODE)) 	Events_Button[3] = 1;
+	if (IsEvent(ALARMMODE)) 	Events_Button[4] = 1;
+	if (IsEvent(SWATCHMODE)) 	Events_Button[5] = 1;
+
+	SwatchDispatch(&mySwatch,&mode,&hours,&minutes,&seconds);
+	//unsigned char i;
+	//static int oldmode=8;
+	//static unsigned char oh=99, om=99, os=99;
+	//char tstr[3];
 
 //	debuginfo(6, button[0], button[2], button[3]);
 
 	//SWatchCB_step(&SWatchCB_state,&hours, &minutes, &seconds, &tenths, &mode);
 
 	ClearEvents();
-
-	if (hours!=oh) {
+	resetButtonState(&Events_Button);
+	update_interface(mode,hours,minutes,seconds,tenths);
+	/*if (hours!=oh) {
 		strencode2digit(tstr, (int)hours);
 		LCD_SetTextColor(Black);
 		LCD_SetBackColor(Black);
@@ -203,7 +217,7 @@ TASK(TaskClock)
 	if (mode != oldmode) {
 		UpdateMode(oldmode, mode);
 		oldmode = mode;
-	}
+	}*/
 }
 
 /**
@@ -256,6 +270,10 @@ int main(void)
 	LCD_DrawFullRect(28, 62, 200, 56);
 	WPrint(&MyWatchScr[SEP1STR], ":");
 	WPrint(&MyWatchScr[SEP2STR], ":");
+
+	SwatchInit(&mySwatch);
+	init_screen();
+
 
 	/* Program cyclic alarms which will fire after an initial offset,
 	 * and after that periodically

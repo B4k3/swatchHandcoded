@@ -4,10 +4,10 @@
 #include "graphic.h"
 
 
-uint8_T dHours 	 = 0;
-uint8_T dMinutes = 0;
-uint8_T dSeconds = 0;
-uint8_T dTenths	 = 0;
+uint8_T dHours 	 = 99;
+uint8_T dMinutes = 99;
+uint8_T dSeconds = 9;
+uint8_T dTenths	 = 9;
 State actual_mode = TimeDisplay;
 
 bool_t showTenths 	= 0;
@@ -29,7 +29,7 @@ void decode_singledigitnumber(uint8_T digit,char* str){
 void init_screen(){
 	WPrint(&MyWatchScr[SEP1STR], ":");
 	WPrint(&MyWatchScr[SEP2STR], ":");
-	//update_interface(TimeDisplay,1,1,1,1);
+	update_interface(TimeDisplay,1,1,1,1);
 }
 
 void draw_hours(uint8_T hours){
