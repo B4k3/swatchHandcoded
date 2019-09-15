@@ -15,6 +15,8 @@ uint8_T stopwatch_tenths;
 
 bool_t  Events_Button[8];
 
+bool_t timeset_status;
+
 
 Signal decodesignal(bool_t *Events_Button){
 	uint8_T i;
@@ -98,6 +100,9 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
             SwatchTran_(me, StopWatch);
             Swatch_Entry(me);
             break;
+        case TimeSet:
+        	timeset_status = (timeset_status == 0)?1:0;
+        	break;
         case plusButton:
             break;
         case minusButton:
@@ -120,8 +125,10 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
             Swatch_Entry(me);
             break;
         case plusButton:
+        	alarm_set_plus();
             break;
         case minusButton:
+        	alarm_set_minus();
             break;
         }
         break;
@@ -141,8 +148,10 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
             TimeSet_Entry(me);
             break;
         case plusButton:
+        	time_set_plus();
             break;
         case minusButton:
+        	time_set_minus();
             break;
         }
         break;
@@ -194,8 +203,8 @@ void Time_Entry(Swatch *me){
 }
 
 void Alarm_Entry(Swatch *me){
-    alarm_hours  = abs_hours;
-    alarm_minutes= abs_minutes;
+    //alarm_hours  = abs_hours;
+    //alarm_minutes= abs_minutes;
 }
 
 void TimeSet_Entry(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
@@ -203,6 +212,7 @@ void TimeSet_Entry(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_s
 	d_minutes = abs_minutes;
 	d_seconds = abs_seconds;
 	d_tenths = abs_tenths;
+	timeset_status=0;
 }
 
 void Time_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
@@ -242,6 +252,34 @@ void time_count() {
 			}
 		}
 	}
+}
+
+void time_set_plus(){
+	if(timeset_status)
+		abs_minutes = (abs_minutes == 59)?0:abs_minutes+1;
+	else
+		abs_hours = (abs_hours == 23)?0:abs_hours+1;
+}
+
+void time_set_minus(){
+	if(timeset_status)
+			abs_minutes = (abs_minutes == 0)?59:abs_minutes-1;
+		else
+			abs_hours = (abs_hours == 0)?23:abs_hours-1;
+}
+
+void alarm_set_plus(){
+	if(timeset_status)
+		alarm_hours = (alarm_hours == 59)?0:alarm_hours+1;
+	else
+		alarm_hours = (alarm_hours == 23)?0:alarm_hours+1;
+}
+
+void alarm_set_minus(){
+	if(timeset_status)
+		alarm_hours = (alarm_hours == 0)?59:alarm_hours-1;
+		else
+			alarm_hours = (alarm_hours == 0)?23:alarm_hours-1;
 }
 
 
