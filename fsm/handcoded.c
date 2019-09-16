@@ -18,6 +18,9 @@ bool_t  Events_Button[8];
 
 bool_t timeset_status;
 
+void stopwatch_tran(Swatch *me,StopwatchState state){
+	me->swatch_state = state;
+}
 
 Signal decodesignal(bool_t *Events_Button){
 	uint8_T i;
@@ -64,6 +67,41 @@ void resetButtonState(){
 	{
 		Events_Button[i]=0;
 	};
+}
+
+void stopwatch_dispatch(Swatch *me,Signal signal){
+	switch(me->swatch_state){
+	case Running:
+		switch(signal){
+		case plusButton:
+			stopwatch_tran(me,Paused);
+			break;
+		case minusButton:
+			stopwatch_tran(me,Stopped);
+			break;
+		}
+		break;
+	case Stopped:
+		switch(signal){
+		case plusButton:
+			stopwatch_tran(me,Running);
+			break;
+		case minusButton:
+			stopwatch_reset();
+			break;
+		}
+		break;
+	case Paused:
+		switch(signal){
+		case plusButton:
+			stopwatch_reset(me,Running);
+			break;
+		case minusButton:
+			stopwatch_reset(me,Stopped);
+			break;
+		}
+		break;
+	}
 }
 
 void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8_T *t){
@@ -253,6 +291,7 @@ void TimeSet_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_
 }
 // update timestamp every tick
 void time_count(Swatch *me) {
+	//debuginfo(1,1,1,abs_seconds);
 	abs_tenths = (abs_tenths+1) % 10;
 	
 	if(abs_tenths == 0) {
@@ -316,44 +355,6 @@ void stopwatch_reset(){
 	stopwatch_minutes = 0;
 	stopwatch_seconds = 0;
 	stopwatch_tenths = 0;
-}
-
-void stopwatch_tran(Swatch *me,StopwatchState state){
-	me->swatch_state = state;
-}
-void stopwatch_dispatch(Swatch *me,Signal signal){
-	switch(me->swatch_state){
-	case Running:
-		switch(signal){
-		case plusButton:
-			stopwatch_tran(me,Paused);
-			break;
-		case minusButton:
-			stopwatch_tran(me,Stopped);
-			break;
-		}
-		break;
-	case Stopped:
-		switch(signal){
-		case plusButton:
-			stopwatch_tran(me,Running);
-			break;
-		case minusButton:
-			stopwatch_reset();
-			break;
-		}
-		break;
-	case Paused:
-		switch(signal){
-		case plusButton:
-			stopwatch_reset(me,Running);
-			break;
-		case minusButton:
-			stopwatch_reset(me,Stopped);
-			break;
-		}
-		break;
-	}
 }
 
 void parse_events(){

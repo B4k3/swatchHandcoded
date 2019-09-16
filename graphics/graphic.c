@@ -29,7 +29,7 @@ void decode_singledigitnumber(uint8_T digit,char* str){
 void init_screen(){
 	WPrint(&MyWatchScr[SEP1STR], ":");
 	WPrint(&MyWatchScr[SEP2STR], ":");
-	update_interface(TimeDisplay,1,1,1,1);
+	update_interface(TimeDisplay,0,0,0,0);
 }
 
 void draw_hours(uint8_T hours){
@@ -37,7 +37,7 @@ void draw_hours(uint8_T hours){
 
 	if(dHours != hours){
 		decode_twodigitnumber(hours,str);
-		//Wclear(&MyWatchScr[HRSSTR]);
+		Wclear(&MyWatchScr[HRSSTR]);
 		WPrint(&MyWatchScr[HRSSTR], str);
 		dHours = hours;
 	}
@@ -48,7 +48,7 @@ void draw_minutes(uint8_T minutes){
 
 	if(dMinutes != minutes){
 		decode_twodigitnumber(minutes,str);
-		//Wclear(&MyWatchScr[MINSTR]);
+		Wclear(&MyWatchScr[MINSTR]);
 		WPrint(&MyWatchScr[MINSTR], str);
 		dMinutes = minutes;
 	}
@@ -59,7 +59,7 @@ void draw_seconds(uint8_T seconds){
 
 	if(dSeconds != seconds){
 		decode_twodigitnumber(seconds,str);
-		//Wclear(&MyWatchScr[SECSTR]);
+		Wclear(&MyWatchScr[SECSTR]);
 		WPrint(&MyWatchScr[SECSTR], str);
 		dSeconds = seconds;
 	}
@@ -68,7 +68,7 @@ void draw_seconds(uint8_T seconds){
 void draw_tenths(uint8_T tenths){
 	char str[2];
 	decode_singledigitnumber(tenths,str);
-	//Wclear(&MyWatchScr[TTSSTR]);
+	Wclear(&MyWatchScr[TTSSTR]);
 	WPrint(&MyWatchScr[TTSSTR], str);
 	dTenths = tenths;
 }
@@ -80,8 +80,8 @@ void show_tenth(){
 
 void hide_tenth(){
 	showTenths = 0;
-	//Wclear(&MyWatchScr[SEP3STR]);
-	//Wclear(&MyWatchScr[TTSSTR]);
+	Wclear(&MyWatchScr[SEP3STR]);
+	Wclear(&MyWatchScr[TTSSTR]);
 }
 
 void show_seconds(){
@@ -91,11 +91,11 @@ void show_seconds(){
 
 void hide_seconds(){
 	showSeconds = 0;
-	//Wclear(&MyWatchScr[SEP2STR]);
-	//Wclear(&MyWatchScr[SECSTR]);
+	Wclear(&MyWatchScr[SEP2STR]);
+	Wclear(&MyWatchScr[SECSTR]);
 }
 
-void switchMode(uint8_t mode){
+void switchMode(State mode){
 	switch(mode){
 		case StopWatch:
 			actual_mode = StopWatch;
@@ -136,7 +136,7 @@ void switchMode(uint8_t mode){
 	}
 }
 
-void update_interface(State mode, uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t tenths){
+void update_interface(State mode, uint8_T hours, uint8_T minutes, uint8_T seconds, uint8_T tenths){
 	if(mode != actual_mode)
 		switchMode(mode);
 	draw_hours(hours);

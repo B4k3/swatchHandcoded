@@ -98,6 +98,12 @@ unsigned char WPrint(const Widget *w, char *s)
 		return 0;
 }
 
+void Wclear(const Widget *W){
+	LCD_SetTextColor(Black);
+	LCD_SetBackColor(Black);
+	LCD_DrawFullRect(W->xl, W->yt,W->xw , W->yh);
+}
+
 
 
 

@@ -95,123 +95,16 @@ TASK(TaskLCD)
 	}
 }
 
-/*void setTimeString(char *watchstr, uint8_T hours, uint8_T minutes, uint8_T seconds, uint8_T tenths, uint8_T mode)
-{
-	sprintf(watchstr, "%2d:%2d:%2d", hours, minutes, seconds);
-}*/
-/*
- * TASK Clock
- */
-/*unsigned char IsUpdateTime()
-{
-	unsigned char res;
-	static unsigned char oh=0, om=0, os=0;
-	if (hours!=oh || minutes!=om || seconds!= os)
-		res = 1;
-	else
-		res = 0;
-	oh = hours;
-	om = minutes;
-	os = seconds;
-	return res;
-}
 
-void UpdateTime()
-{
-	unsigned char watchstr[20];
-	setTimeString(watchstr, hours, minutes, seconds, tenths, mode);
-
-	LCD_SetTextColor(Black);
-	LCD_SetBackColor(Black);
-	LCD_DrawFullRect(30, 76, 160, 32);
-
-/*	WPrint(&MyWatchScr[TIMESTR], watchstr); */
-/*}
-
-void UpdateMode(unsigned char om, unsigned char m)
-{
-	switch(om) {
-	case 2:
-		DrawOff(&MyWatchScr[BALARM]);
-		break;
-	case 1:
-		DrawOff(&MyWatchScr[BTIMESET]);
-		break;
-	case 0:
-		DrawOff(&MyWatchScr[BTIME]);
-		break;
-	case 3:
-		DrawOff(&MyWatchScr[BSWATCH]);
-		break;
-	}
-	switch(m) {
-	case 2:
-		DrawOn(&MyWatchScr[BALARM]);
-		break;
-	case 1:
-		DrawOn(&MyWatchScr[BTIMESET]);
-		break;
-	case 0:
-		DrawOn(&MyWatchScr[BTIME]);
-		break;
-	case 3:
-		DrawOn(&MyWatchScr[BSWATCH]);
-		break;
-	}
-}
-
-void strencode2digit(char *str, int digit)
-{
-	str[2]=0;
-	str[0]=digit/10+'0';
-	str[1]=digit%10+'0';
-}
-*/
 TASK(TaskClock)
 {
 	parse_events();
 	SwatchDispatch(&mySwatch,mode,&hours,&minutes,&seconds,&tenths);
-	//unsigned char i;
-	//static int oldmode=8;
-	//static unsigned char oh=99, om=99, os=99;
-	//char tstr[3];
-
-//	debuginfo(6, button[0], button[2], button[3]);
-
-	//SWatchCB_step(&SWatchCB_state,&hours, &minutes, &seconds, &tenths, &mode);
 
 	ClearEvents();
 	resetButtonState();
 	update_interface(mode,hours,minutes,seconds,tenths);
-	/*if (hours!=oh) {
-		strencode2digit(tstr, (int)hours);
-		LCD_SetTextColor(Black);
-		LCD_SetBackColor(Black);
-		LCD_DrawFullRect(29, 70, 62, 48);
-		WPrint(&MyWatchScr[HRSSTR], tstr);
-		oh=hours;
-	}
-	if (minutes!=om) {
-		strencode2digit(tstr, (int)minutes);
-		LCD_SetTextColor(Black);
-		LCD_SetBackColor(Black);
-		LCD_DrawFullRect(99, 70, 62, 48);
-		WPrint(&MyWatchScr[MINSTR], tstr);
-		om=minutes;
-	}
-	if (seconds!= os) {
-		strencode2digit(tstr, (int)seconds);
-		LCD_SetTextColor(Black);
-		LCD_SetBackColor(Black);
-		LCD_DrawFullRect(168, 70, 62, 48);
-		WPrint(&MyWatchScr[SECSTR], tstr);
-		os=seconds;
-	}
 
-	if (mode != oldmode) {
-		UpdateMode(oldmode, mode);
-		oldmode = mode;
-	}*/
 }
 
 /**
@@ -232,13 +125,6 @@ int main(void)
 	SystemInit();
   /*Initializes Erika related stuffs*/
 	EE_system_init();
-
-	//SWatchCB_state.ModelData.blockIO = &bIO;
-	//SWatchCB_state.ModelData.prevZCSigState = &ZCstate;
-	//SWatchCB_state.ModelData.dwork = &dw;
-
-  /* init state machine */
-	//SWatchCB_initialize(&SWatchCB_state,&hours, &minutes, &seconds, &tenths, &mode);
 
 	/*Initialize systick */
 	EE_systick_set_period(MILLISECONDS_TO_TICKS(1, SystemCoreClock));
