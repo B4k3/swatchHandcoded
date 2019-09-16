@@ -8,10 +8,10 @@ uint8_T abs_tenths;		// absolute tenths count
 uint8_T alarm_hours;
 uint8_T alarm_minutes;
 
-uint8_T stopwatch_hours;
-uint8_T stopwatch_minutes;
-uint8_T stopwatch_seconds;
-uint8_T stopwatch_tenths;
+uint8_T stopwatch_hours, d_stopwatch_hours;
+uint8_T stopwatch_minutes, d_stopwatch_minutes;
+uint8_T stopwatch_seconds, d_stopwatch_seconds;
+uint8_T stopwatch_tenths, d_stopwatch_tenths;
 
 bool_t  Events_Button[8];
 
@@ -69,6 +69,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
     switch (me->state_)
     {
     case TimeDisplay:
+    	Time_During();
         switch (decodesignal(Events_Button))
         {
         case timeSetMode:
@@ -86,6 +87,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
         }
         break;
     case TimeSet:
+    	TimeSet_During();
         switch (decodesignal(Events_Button))
         {
         case timeMode:
@@ -104,12 +106,15 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
         	timeset_status = (timeset_status == 0)?1:0;
         	break;
         case plusButton:
+        	time_set_plus();
             break;
         case minusButton:
+        	time_set_minus();
             break;
         }
         break;
     case AlarmSet:
+    	Alarm_During();
         switch (decodesignal(Events_Button))
         {
         case timeMode:
@@ -133,6 +138,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
         }
         break;
     case StopWatch:
+    	Swatch_During();
         switch (decodesignal(Events_Button))
         {
         case timeMode:
@@ -148,16 +154,16 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
             TimeSet_Entry(me);
             break;
         case plusButton:
-        	time_set_plus();
+        	stopwatch_dispatch(me,plusButton);
             break;
         case minusButton:
-        	time_set_minus();
+        	stopwatch_dispatch(me,minusButton);
             break;
         }
         break;
     }
 
-    time_count();
+    time_count(me);
 }
 
 
@@ -183,6 +189,7 @@ void SwatchTran_(Swatch *me, State nextstate)
 {   
     me->old_state = me->state_;
 	me->state_ = nextstate;
+
 }
 
 
@@ -222,10 +229,16 @@ void Time_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_sec
 	d_tenths = abs_tenths;
 }
 void Swatch_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
-	d_hours = stopwatch_hours;
-	d_minutes = stopwatch_minutes;
-	d_seconds = stopwatch_seconds;
-	d_tenths = stopwatch_tenths;
+	if(me->swatch_state == Running){
+		d_stopwatch_hours = stopwatch_hours;
+		d_stopwatch_minutes = stopwatch_minutes;
+		d_stopwatch_seconds = stopwatch_seconds;
+		d_stopwatch_tenths = stopwatch_tenths;
+	}
+	d_hours = d_stopwatch_hours;
+	d_minutes = d_stopwatch_minutes;
+	d_seconds = d_stopwatch_seconds;
+	d_tenths = d_stopwatch_tenths;
 }
 void Alarm_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
 	d_hours = alarm_hours;
@@ -238,7 +251,7 @@ void TimeSet_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_
 	d_tenths = abs_tenths;
 }
 // update timestamp every tick
-void time_count() {
+void time_count(Swatch *me) {
 	abs_tenths = (abs_tenths+1) % 10;
 	
 	if(abs_tenths == 0) {
@@ -251,6 +264,21 @@ void time_count() {
 				abs_hours = (abs_hours+1) % 24;
 			}
 		}
+	}
+	if(me->swatch_state != Stopped){
+		stopwatch_tenths = (stopwatch_tenths+1) % 10;
+
+			if(stopwatch_tenths == 0) {
+				stopwatch_seconds = (stopwatch_seconds+1) % 60;
+
+				if(stopwatch_seconds == 0) {
+					stopwatch_minutes = (stopwatch_minutes+1) % 60;
+
+					if(stopwatch_minutes == 0) {
+						stopwatch_hours = (stopwatch_hours+1) % 24;
+					}
+				}
+			}
 	}
 }
 
@@ -282,7 +310,50 @@ void alarm_set_minus(){
 			alarm_hours = (alarm_hours == 0)?23:alarm_hours-1;
 }
 
+void stopwatch_reset(){
+	 stopwatch_hours = 0;
+	stopwatch_minutes = 0;
+	stopwatch_seconds = 0;
+	stopwatch_tenths = 0;
+}
 
+void stopwatch_tran(Swatch *me,StopwatchState state){
+	me->swatch_state = state;
+}
+void stopwatch_dispatch(Swatch *me,Signal signal){
+	switch(me->swatch_state){
+	case Running:
+		switch(signal){
+		case plusButton:
+			stopwatch_tran(me,Paused);
+			break;
+		case minusButton:
+			stopwatch_tran(me,Stopped);
+			break;
+		}
+		break;
+	case Stopped:
+		switch(signal){
+		case plusButton:
+			stopwatch_tran(me,Running);
+			break;
+		case minusButton:
+			stopwatch_reset();
+			break;
+		}
+		break;
+	case Paused:
+		switch(signal){
+		case plusButton:
+			stopwatch_reset(me,Running);
+			break;
+		case minusButton:
+			stopwatch_reset(me,Stopped);
+			break;
+		}
+		break;
+	}
+}
 
 
 
