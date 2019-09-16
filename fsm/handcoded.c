@@ -1,5 +1,6 @@
 #include "handcoded.h"
 #include "../libs/types.h"
+#include "../libs/Event.h"
 uint8_T abs_hours;		// absolute hour count
 uint8_T abs_minutes;	// absolute minutes count
 uint8_T abs_seconds;	// absolute seconds count
@@ -57,7 +58,7 @@ Signal decodesignal(bool_t *Events_Button){
     
 }
 
-void resetButtonState(bool_t *Events_Button){
+void resetButtonState(){
 	uint8_T i;
 	for (i = 0; i < 6; i++)
 	{
@@ -102,15 +103,15 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
             SwatchTran_(me, StopWatch);
             Swatch_Entry(me);
             break;
-        case TimeSet:
-        	timeset_status = (timeset_status == 0)?1:0;
-        	break;
         case plusButton:
         	time_set_plus();
             break;
         case minusButton:
         	time_set_minus();
             break;
+        case timeSetMode:
+			timeset_status = (timeset_status == 0)?1:0;
+			break;
         }
         break;
     case AlarmSet:
@@ -203,10 +204,10 @@ void Swatch_Entry(Swatch *me){
 
 
 void Time_Entry(Swatch *me){
-    hours  = abs_hours;
-    minutes= abs_minutes;
-    seconds= abs_seconds;
-    tenths = abs_tenths;
+   // hours  = abs_hours;
+    //minutes= abs_minutes;
+    //seconds= abs_seconds;
+    //tenths = abs_tenths;
 }
 
 void Alarm_Entry(Swatch *me){
@@ -353,6 +354,15 @@ void stopwatch_dispatch(Swatch *me,Signal signal){
 		}
 		break;
 	}
+}
+
+void parse_events(){
+	if (IsEvent(PLUS)) 			Events_Button[0] = 1;
+	if (IsEvent(MINUS)) 		Events_Button[1] = 1;
+	if (IsEvent(TIMEMODE)) 		Events_Button[2] = 1;
+	if (IsEvent(TIMESETMODE)) 	Events_Button[3] = 1;
+	if (IsEvent(ALARMMODE)) 	Events_Button[4] = 1;
+	if (IsEvent(SWATCHMODE)) 	Events_Button[5] = 1;
 }
 
 

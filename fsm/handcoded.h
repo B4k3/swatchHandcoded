@@ -3,6 +3,7 @@
 
 #include "../config/config.h"
 #include "../libs/types.h"
+#include "../libs/WidgetConfig.h"
 
 
 //---------------STRUCTURES AND METHODS---------------
@@ -20,7 +21,7 @@ METHODS
 	void SwatchTran_(Swatch *me, State nextstate);
 
 	Signal decodesignal(bool_t *Events_Button);
-	void resetButtonState(bool_t *Events_Button);
+	void resetButtonState();
 END_CLASS
 
 #endif

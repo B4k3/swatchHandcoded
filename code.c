@@ -169,14 +169,8 @@ void strencode2digit(char *str, int digit)
 */
 TASK(TaskClock)
 {
-	if (IsEvent(PLUS)) 			Events_Button[0] = 1;
-	if (IsEvent(MINUS)) 		Events_Button[1] = 1;
-	if (IsEvent(TIMEMODE)) 		Events_Button[2] = 1;
-	if (IsEvent(TIMESETMODE)) 	Events_Button[3] = 1;
-	if (IsEvent(ALARMMODE)) 	Events_Button[4] = 1;
-	if (IsEvent(SWATCHMODE)) 	Events_Button[5] = 1;
-
-	SwatchDispatch(&mySwatch,&mode,&hours,&minutes,&seconds);
+	parse_events();
+	SwatchDispatch(&mySwatch,mode,&hours,&minutes,&seconds,&tenths);
 	//unsigned char i;
 	//static int oldmode=8;
 	//static unsigned char oh=99, om=99, os=99;
@@ -187,7 +181,7 @@ TASK(TaskClock)
 	//SWatchCB_step(&SWatchCB_state,&hours, &minutes, &seconds, &tenths, &mode);
 
 	ClearEvents();
-	resetButtonState(&Events_Button);
+	resetButtonState();
 	update_interface(mode,hours,minutes,seconds,tenths);
 	/*if (hours!=oh) {
 		strencode2digit(tstr, (int)hours);
