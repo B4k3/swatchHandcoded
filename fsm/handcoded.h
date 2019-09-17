@@ -17,7 +17,7 @@ METHODS
 	void SwatchXtor_(Swatch *me);
 
 	void SwatchInit(Swatch *me);
-	void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8_T *t);
+	void SwatchDispatch(Swatch *me,uint8_T *h,uint8_T *m,uint8_T *s,uint8_T *t);
 	void SwatchTran_(Swatch *me, State nextstate);
 
 	Signal decodesignal(bool_t *Events_Button);

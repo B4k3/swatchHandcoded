@@ -14,22 +14,57 @@ bool_t showTenths 	= 0;
 bool_t showSeconds	= 1;
 
 
-void decode_twodigitnumber(uint8_T digit,char* str){
+void decode_twodigitnumber(uint8_T digit,char *str){
 	str[2]=0;
 	str[0]=digit/10+'0';
 	str[1]=digit%10+'0';
 }
 
-void decode_singledigitnumber(uint8_T digit,char* str){
+void decode_singledigitnumber(uint8_T digit,char *str){
 	str[1] = 0;
 	str[0] = digit%10+'0';
 }
 
+void drawUpdate(State old, State new_state){
+	switch(old){
+	case TimeDisplay:
+		DrawOff(&MyWatchScr[1]);
+		break;
+	case TimeSet:
+		DrawOff(&MyWatchScr[2]);
+		break;
+	case StopWatch:
+		DrawOff(&MyWatchScr[4]);
+		break;
+	case AlarmSet:
+		DrawOff(&MyWatchScr[3]);
+		break;
+	}
+	switch(new_state){
+	case TimeDisplay:
+		DrawOn(&MyWatchScr[1]);
+		break;
+	case TimeSet:
+		DrawOn(&MyWatchScr[2]);
+		break;
+	case StopWatch:
+		DrawOn(&MyWatchScr[4]);
+		break;
+	case AlarmSet:
+		DrawOn(&MyWatchScr[3]);
+		break;
+	}
+}
 
 void init_screen(){
+	DrawInit(MyWatchScr);
+	LCD_SetTextColor(Black);
+	LCD_SetBackColor(Black);
+	LCD_DrawFullRect(28, 62, 200, 56);
 	WPrint(&MyWatchScr[SEP1STR], ":");
 	WPrint(&MyWatchScr[SEP2STR], ":");
 	update_interface(TimeDisplay,0,0,0,0);
+	DrawOn(&MyWatchScr[1]);
 }
 
 void draw_hours(uint8_T hours){
@@ -95,50 +130,52 @@ void hide_seconds(){
 	Wclear(&MyWatchScr[SECSTR]);
 }
 
-void switchMode(State mode){
-	switch(mode){
+void switchMode(State state){
+	State old_mode = actual_mode;
+	switch(state){
 		case StopWatch:
 			actual_mode = StopWatch;
-			if(showTenths){
+			if(showTenths == 1){
 				hide_tenth();
 			}
-			if(!showSeconds){
+			if(showSeconds == 0){
 				show_seconds();
 			}
 			break;
 		case TimeDisplay:
 			actual_mode = TimeDisplay;
-			if(showTenths){
+			if(showTenths == 1){
 				hide_tenth();
 			}
-			if(!showSeconds){
+			if(showSeconds == 0){
 				show_seconds();
 			}
 			break;
 		case TimeSet:
 			actual_mode = TimeSet;
-			if(showTenths){
+			if(showTenths == 1){
 				hide_tenth();
 			}
-			if(showSeconds){
+			if(showSeconds == 1){
 				hide_seconds();
 			}
 			break;
 		case AlarmSet:
 			actual_mode = AlarmSet;
-			if(!showTenths){
+			if(showTenths == 0){
 				show_tenth();
 			}
-			if(showSeconds){
+			if(showSeconds == 1){
 				hide_seconds();
 			}
 			break;
 	}
+	drawUpdate(old_mode,actual_mode);
 }
 
-void update_interface(State mode, uint8_T hours, uint8_T minutes, uint8_T seconds, uint8_T tenths){
-	if(mode != actual_mode)
-		switchMode(mode);
+void update_interface(State state, uint8_T hours, uint8_T minutes, uint8_T seconds, uint8_T tenths){
+	if(state != actual_mode)
+		switchMode(state);
 	draw_hours(hours);
 	draw_minutes(minutes);
 	if(showSeconds)

@@ -70,7 +70,6 @@
 Swatch mySwatch;
 
 uint8_T hours=0, minutes=0, seconds=0, tenths=0;
-State mode;
 
 /*
  * SysTick ISR2
@@ -99,11 +98,12 @@ TASK(TaskLCD)
 TASK(TaskClock)
 {
 	parse_events();
-	SwatchDispatch(&mySwatch,mode,&hours,&minutes,&seconds,&tenths);
+	SwatchDispatch(&mySwatch,&hours,&minutes,&seconds,&tenths);
 
 	ClearEvents();
 	resetButtonState();
-	update_interface(mode,hours,minutes,seconds,tenths);
+
+	update_interface(mySwatch.state_,hours,minutes,seconds,tenths);
 
 }
 
@@ -144,12 +144,12 @@ int main(void)
 	InitTouch(-0.102, 0.0656, -335, 10);
 
 	/* Draw the background */
-	DrawInit(MyWatchScr);
+	/*DrawInit(MyWatchScr);
 	LCD_SetTextColor(Black);
 	LCD_SetBackColor(Black);
 	LCD_DrawFullRect(28, 62, 200, 56);
 	WPrint(&MyWatchScr[SEP1STR], ":");
-	WPrint(&MyWatchScr[SEP2STR], ":");
+	WPrint(&MyWatchScr[SEP2STR], ":");*/
 
 	SwatchInit(&mySwatch);
 	init_screen();

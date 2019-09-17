@@ -103,7 +103,3 @@ void Wclear(const Widget *W){
 	LCD_SetBackColor(Black);
 	LCD_DrawFullRect(W->xl, W->yt,W->xw , W->yh);
 }
-
-
-
-

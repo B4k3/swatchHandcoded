@@ -11,6 +11,7 @@
 #include "Touch.h"
 #include "fonts.h"
 #include "stm32f4_discovery_lcd.h"
+#include "types.h"
 
 
 typedef enum  {

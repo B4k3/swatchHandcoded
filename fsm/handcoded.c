@@ -9,14 +9,145 @@ uint8_T abs_tenths;		// absolute tenths count
 uint8_T alarm_hours;
 uint8_T alarm_minutes;
 
-uint8_T stopwatch_hours, d_stopwatch_hours;
-uint8_T stopwatch_minutes, d_stopwatch_minutes;
-uint8_T stopwatch_seconds, d_stopwatch_seconds;
-uint8_T stopwatch_tenths, d_stopwatch_tenths;
+uint8_T stopwatch_hours;
+uint8_T d_stopwatch_hours;
+uint8_T stopwatch_minutes;
+uint8_T d_stopwatch_minutes;
+uint8_T stopwatch_seconds;
+uint8_T d_stopwatch_seconds;
+uint8_T stopwatch_tenths;
+uint8_T d_stopwatch_tenths;
 
 bool_t  Events_Button[8];
 
 bool_t timeset_status;
+
+/*Entry state*/
+void Swatch_Entry(Swatch *me){
+    stopwatch_hours = 0;
+    stopwatch_minutes = 0;
+    stopwatch_seconds = 0;
+    stopwatch_tenths = 0;
+}
+
+
+void Time_Entry(Swatch *me){
+   // hours  = abs_hours;
+    //minutes= abs_minutes;
+    //seconds= abs_seconds;
+    //tenths = abs_tenths;
+}
+
+void Alarm_Entry(Swatch *me){
+    //alarm_hours  = abs_hours;
+    //alarm_minutes= abs_minutes;
+}
+
+void TimeSet_Entry(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
+	*d_hours = abs_hours;
+	*d_minutes = abs_minutes;
+	*d_seconds = abs_seconds;
+	*d_tenths = abs_tenths;
+	timeset_status=0;
+}
+
+void Time_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
+	*d_hours = abs_hours;
+	*d_minutes = abs_minutes;
+	*d_seconds = abs_seconds;
+	*d_tenths = abs_tenths;
+	//debuginfo(d_hours,d_minutes,d_seconds,d_tenths);
+}
+void Swatch_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
+	debuginfo(0,0,d_stopwatch_seconds,stopwatch_seconds);
+	*d_hours = d_stopwatch_hours;
+	*d_minutes = d_stopwatch_minutes;
+	*d_seconds = d_stopwatch_seconds;
+	*d_tenths = d_stopwatch_tenths;
+}
+void Alarm_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
+	*d_hours = alarm_hours;
+	*d_minutes = alarm_minutes;
+}
+void TimeSet_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
+	*d_hours = abs_hours;
+	*d_minutes = abs_minutes;
+	*d_seconds = abs_seconds;
+	*d_tenths = abs_tenths;
+}
+// update timestamp every tick
+void time_count(Swatch *me) {
+	//debuginfo(1,1,1,abs_seconds);
+	abs_tenths = (abs_tenths+1) % 10;
+
+	if(abs_tenths == 0) {
+		abs_seconds = (abs_seconds+1) % 60;
+
+		if(abs_seconds == 0) {
+			abs_minutes = (abs_minutes+1) % 60;
+
+			if(abs_minutes == 0) {
+				abs_hours = (abs_hours+1) % 24;
+			}
+		}
+	}
+	if(me->swatch_state != Stopped){
+		stopwatch_tenths = (stopwatch_tenths+1) % 10;
+
+			if(stopwatch_tenths == 0) {
+				stopwatch_seconds = (stopwatch_seconds+1) % 60;
+
+				if(stopwatch_seconds == 0) {
+					stopwatch_minutes = (stopwatch_minutes+1) % 60;
+
+					if(stopwatch_minutes == 0) {
+						stopwatch_hours = (stopwatch_hours+1) % 24;
+					}
+				}
+			}
+	}
+	if(me->swatch_state == Running){
+		d_stopwatch_hours = stopwatch_hours;
+		d_stopwatch_minutes = stopwatch_minutes;
+		d_stopwatch_seconds = stopwatch_seconds;
+		d_stopwatch_tenths = stopwatch_tenths;
+	}
+}
+
+void time_set_plus(){
+	if(timeset_status)
+		abs_minutes = (abs_minutes == 59)?0:abs_minutes+1;
+	else
+		abs_hours = (abs_hours == 23)?0:abs_hours+1;
+}
+
+void time_set_minus(){
+	if(timeset_status)
+			abs_minutes = (abs_minutes == 0)?59:abs_minutes-1;
+		else
+			abs_hours = (abs_hours == 0)?23:abs_hours-1;
+}
+
+void alarm_set_plus(){
+	if(timeset_status)
+		alarm_hours = (alarm_hours == 59)?0:alarm_hours+1;
+	else
+		alarm_hours = (alarm_hours == 23)?0:alarm_hours+1;
+}
+
+void alarm_set_minus(){
+	if(timeset_status)
+		alarm_hours = (alarm_hours == 0)?59:alarm_hours-1;
+		else
+			alarm_hours = (alarm_hours == 0)?23:alarm_hours-1;
+}
+
+void stopwatch_reset(){
+	 stopwatch_hours = 0;
+	stopwatch_minutes = 0;
+	stopwatch_seconds = 0;
+	stopwatch_tenths = 0;
+}
 
 void stopwatch_tran(Swatch *me,StopwatchState state){
 	me->swatch_state = state;
@@ -94,26 +225,26 @@ void stopwatch_dispatch(Swatch *me,Signal signal){
 	case Paused:
 		switch(signal){
 		case plusButton:
-			stopwatch_reset(me,Running);
+			stopwatch_tran(me,Running);
 			break;
 		case minusButton:
-			stopwatch_reset(me,Stopped);
+			stopwatch_tran(me,Stopped);
 			break;
 		}
 		break;
 	}
 }
 
-void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8_T *t){
+void SwatchDispatch(Swatch *me,uint8_T *h,uint8_T *m,uint8_T *s,uint8_T *t){
     switch (me->state_)
     {
     case TimeDisplay:
-    	Time_During();
+    	Time_During(me,h,m,s,t);
         switch (decodesignal(Events_Button))
         {
         case timeSetMode:
             SwatchTran_(me, TimeSet);
-            TimeSet_Entry(me);
+            TimeSet_Entry(me,h,m,s,t);
             break;
         case alarmMode:
             SwatchTran_(me, AlarmSet);
@@ -126,7 +257,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
         }
         break;
     case TimeSet:
-    	TimeSet_During();
+    	TimeSet_During(me,h,m,s,t);
         switch (decodesignal(Events_Button))
         {
         case timeMode:
@@ -153,7 +284,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
         }
         break;
     case AlarmSet:
-    	Alarm_During();
+    	Alarm_During(me,h,m,s,t);
         switch (decodesignal(Events_Button))
         {
         case timeMode:
@@ -162,7 +293,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
             break;
         case timeSetMode:
             SwatchTran_(me, TimeSet);
-            TimeSet_Entry(me);
+            TimeSet_Entry(me,h,m,s,t);
             break;
         case swatchMode:
             SwatchTran_(me, StopWatch);
@@ -177,7 +308,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
         }
         break;
     case StopWatch:
-    	Swatch_During();
+    	Swatch_During(me,h,m,s,t);
         switch (decodesignal(Events_Button))
         {
         case timeMode:
@@ -190,7 +321,7 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
             break;
         case timeSetMode:
             SwatchTran_(me, TimeSet);
-            TimeSet_Entry(me);
+            TimeSet_Entry(me,h,m,s,t);
             break;
         case plusButton:
         	stopwatch_dispatch(me,plusButton);
@@ -204,9 +335,6 @@ void SwatchDispatch(Swatch *me,State mode,uint8_T *h,uint8_T *m,uint8_T *s,uint8
 
     time_count(me);
 }
-
-
-
 
 void SwatchInit(Swatch *me)
 {
@@ -229,132 +357,6 @@ void SwatchTran_(Swatch *me, State nextstate)
     me->old_state = me->state_;
 	me->state_ = nextstate;
 
-}
-
-
-/*Entry state*/
-void Swatch_Entry(Swatch *me){
-    stopwatch_hours = 0;
-    stopwatch_minutes = 0;
-    stopwatch_seconds = 0;
-    stopwatch_tenths = 0;
-}
-
-
-void Time_Entry(Swatch *me){
-   // hours  = abs_hours;
-    //minutes= abs_minutes;
-    //seconds= abs_seconds;
-    //tenths = abs_tenths;
-}
-
-void Alarm_Entry(Swatch *me){
-    //alarm_hours  = abs_hours;
-    //alarm_minutes= abs_minutes;
-}
-
-void TimeSet_Entry(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
-	d_hours = abs_hours;
-	d_minutes = abs_minutes;
-	d_seconds = abs_seconds;
-	d_tenths = abs_tenths;
-	timeset_status=0;
-}
-
-void Time_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
-	d_hours = abs_hours;
-	d_minutes = abs_minutes;
-	d_seconds = abs_seconds;
-	d_tenths = abs_tenths;
-}
-void Swatch_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
-	if(me->swatch_state == Running){
-		d_stopwatch_hours = stopwatch_hours;
-		d_stopwatch_minutes = stopwatch_minutes;
-		d_stopwatch_seconds = stopwatch_seconds;
-		d_stopwatch_tenths = stopwatch_tenths;
-	}
-	d_hours = d_stopwatch_hours;
-	d_minutes = d_stopwatch_minutes;
-	d_seconds = d_stopwatch_seconds;
-	d_tenths = d_stopwatch_tenths;
-}
-void Alarm_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
-	d_hours = alarm_hours;
-	d_minutes = alarm_minutes;
-}
-void TimeSet_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
-	d_hours = abs_hours;
-	d_minutes = abs_minutes;
-	d_seconds = abs_seconds;
-	d_tenths = abs_tenths;
-}
-// update timestamp every tick
-void time_count(Swatch *me) {
-	//debuginfo(1,1,1,abs_seconds);
-	abs_tenths = (abs_tenths+1) % 10;
-	
-	if(abs_tenths == 0) {
-		abs_seconds = (abs_seconds+1) % 60;
-		
-		if(abs_seconds == 0) {
-			abs_minutes = (abs_minutes+1) % 60;
-			
-			if(abs_minutes == 0) {
-				abs_hours = (abs_hours+1) % 24;
-			}
-		}
-	}
-	if(me->swatch_state != Stopped){
-		stopwatch_tenths = (stopwatch_tenths+1) % 10;
-
-			if(stopwatch_tenths == 0) {
-				stopwatch_seconds = (stopwatch_seconds+1) % 60;
-
-				if(stopwatch_seconds == 0) {
-					stopwatch_minutes = (stopwatch_minutes+1) % 60;
-
-					if(stopwatch_minutes == 0) {
-						stopwatch_hours = (stopwatch_hours+1) % 24;
-					}
-				}
-			}
-	}
-}
-
-void time_set_plus(){
-	if(timeset_status)
-		abs_minutes = (abs_minutes == 59)?0:abs_minutes+1;
-	else
-		abs_hours = (abs_hours == 23)?0:abs_hours+1;
-}
-
-void time_set_minus(){
-	if(timeset_status)
-			abs_minutes = (abs_minutes == 0)?59:abs_minutes-1;
-		else
-			abs_hours = (abs_hours == 0)?23:abs_hours-1;
-}
-
-void alarm_set_plus(){
-	if(timeset_status)
-		alarm_hours = (alarm_hours == 59)?0:alarm_hours+1;
-	else
-		alarm_hours = (alarm_hours == 23)?0:alarm_hours+1;
-}
-
-void alarm_set_minus(){
-	if(timeset_status)
-		alarm_hours = (alarm_hours == 0)?59:alarm_hours-1;
-		else
-			alarm_hours = (alarm_hours == 0)?23:alarm_hours-1;
-}
-
-void stopwatch_reset(){
-	 stopwatch_hours = 0;
-	stopwatch_minutes = 0;
-	stopwatch_seconds = 0;
-	stopwatch_tenths = 0;
 }
 
 void parse_events(){
