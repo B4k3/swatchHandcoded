@@ -100,7 +100,7 @@ TASK(TaskClock)
 	parse_events();
 	SwatchDispatch(&mySwatch,&hours,&minutes,&seconds,&tenths);
 
-	ClearEvents();
+
 	resetButtonState();
 
 	update_interface(mySwatch.state_,hours,minutes,seconds,tenths);

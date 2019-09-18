@@ -178,9 +178,9 @@ void update_interface(State state, uint8_T hours, uint8_T minutes, uint8_T secon
 		switchMode(state);
 	draw_hours(hours);
 	draw_minutes(minutes);
-	if(showSeconds)
+	if(showSeconds == 1)
 		draw_seconds(seconds);
-	if(showTenths)
+	if(showTenths == 1)
 		draw_tenths(tenths);
 }
 

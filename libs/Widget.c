@@ -14,8 +14,6 @@
 unsigned char contains(Widget *w, TPoint *point){
 	if	((point->x >= w->xl) && (point->x <= w->xl + w->xw) &&
 		 (point->y >= w->yt) && (point->y <= w->yt + w->yh)) {
-/*		debuginfo(5, point->x, point->y, 0);
-		debuginfo(6, w->xl, w->yt, 0); */
 		return 1;
 	}
 	else
@@ -99,7 +97,9 @@ unsigned char WPrint(const Widget *w, char *s)
 }
 
 void Wclear(const Widget *W){
-	LCD_SetTextColor(Black);
-	LCD_SetBackColor(Black);
-	LCD_DrawFullRect(W->xl, W->yt,W->xw , W->yh);
+	if (W->wt == TEXT) {
+		LCD_SetTextColor(Black);
+		LCD_SetBackColor(Black);
+		LCD_DrawFullRect(W->xl, W->yt,W->xw , W->yh);
+	}
 }

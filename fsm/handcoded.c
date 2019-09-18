@@ -366,6 +366,7 @@ void parse_events(){
 	if (IsEvent(TIMESETMODE)) 	Events_Button[3] = 1;
 	if (IsEvent(ALARMMODE)) 	Events_Button[4] = 1;
 	if (IsEvent(SWATCHMODE)) 	Events_Button[5] = 1;
+	ClearEvents();
 }
 
 
