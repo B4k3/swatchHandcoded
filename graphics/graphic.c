@@ -26,6 +26,7 @@ void decode_singledigitnumber(uint8_T digit,char *str){
 }
 
 void drawUpdate(State old, State new_state){
+	//debuginfo(0,0,showTenths,showSeconds);
 	switch(old){
 	case TimeDisplay:
 		DrawOff(&MyWatchScr[1]);
@@ -102,10 +103,14 @@ void draw_seconds(uint8_T seconds){
 
 void draw_tenths(uint8_T tenths){
 	char str[2];
-	decode_singledigitnumber(tenths,str);
-	Wclear(&MyWatchScr[TTSSTR]);
-	WPrint(&MyWatchScr[TTSSTR], str);
-	dTenths = tenths;
+	debuginfo(1,1,1,1);
+
+	if(dTenths != tenths){
+		decode_singledigitnumber(tenths,str);
+		Wclear(&MyWatchScr[TTSSTR]);
+		WPrint(&MyWatchScr[TTSSTR], str);
+		dTenths = tenths;
+	}
 }
 
 void show_tenth(){
@@ -136,7 +141,7 @@ void switchMode(State state){
 		case StopWatch:
 			actual_mode = StopWatch;
 			if(showTenths == 1){
-				hide_tenth();
+				show_tenth();
 			}
 			if(showSeconds == 0){
 				show_seconds();
@@ -162,8 +167,8 @@ void switchMode(State state){
 			break;
 		case AlarmSet:
 			actual_mode = AlarmSet;
-			if(showTenths == 0){
-				show_tenth();
+			if(showTenths == 1){
+				hide_tenth();
 			}
 			if(showSeconds == 1){
 				hide_seconds();

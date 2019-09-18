@@ -20,7 +20,7 @@ uint8_T d_stopwatch_tenths;
 
 bool_t  Events_Button[8];
 
-bool_t timeset_status;
+bool_t timeset_status,alarm_status;
 
 /*Entry state*/
 void Swatch_Entry(Swatch *me){
@@ -41,6 +41,7 @@ void Time_Entry(Swatch *me){
 void Alarm_Entry(Swatch *me){
     //alarm_hours  = abs_hours;
     //alarm_minutes= abs_minutes;
+	alarm_status = 0;
 }
 
 void TimeSet_Entry(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
@@ -59,7 +60,7 @@ void Time_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_sec
 	//debuginfo(d_hours,d_minutes,d_seconds,d_tenths);
 }
 void Swatch_During(Swatch *me,uint8_T *d_hours, uint8_T *d_minutes, uint8_T *d_seconds, uint8_T *d_tenths){
-	debuginfo(0,0,d_stopwatch_seconds,stopwatch_seconds);
+	//debuginfo(0,0,d_stopwatch_seconds,stopwatch_seconds);
 	*d_hours = d_stopwatch_hours;
 	*d_minutes = d_stopwatch_minutes;
 	*d_seconds = d_stopwatch_seconds;
@@ -129,14 +130,14 @@ void time_set_minus(){
 }
 
 void alarm_set_plus(){
-	if(timeset_status)
+	if(alarm_status)
 		alarm_hours = (alarm_hours == 59)?0:alarm_hours+1;
 	else
 		alarm_hours = (alarm_hours == 23)?0:alarm_hours+1;
 }
 
 void alarm_set_minus(){
-	if(timeset_status)
+	if(alarm_status)
 		alarm_hours = (alarm_hours == 0)?59:alarm_hours-1;
 		else
 			alarm_hours = (alarm_hours == 0)?23:alarm_hours-1;
@@ -305,6 +306,9 @@ void SwatchDispatch(Swatch *me,uint8_T *h,uint8_T *m,uint8_T *s,uint8_T *t){
         case minusButton:
         	alarm_set_minus();
             break;
+        case alarmMode:
+        	alarm_status = (alarm_status == 0)?1:0;
+        	break;
         }
         break;
     case StopWatch:
