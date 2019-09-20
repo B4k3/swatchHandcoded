@@ -8,7 +8,7 @@
 #ifndef WIDGETCONFIG_H_
 #define WIDGETCONFIG_H_
 
-#define NUMWIDGETS 13
+#define NUMWIDGETS 14
 
 #define BAKCG 0
 #define BTIME 1

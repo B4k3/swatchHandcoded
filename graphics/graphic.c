@@ -103,14 +103,13 @@ void draw_seconds(uint8_T seconds){
 
 void draw_tenths(uint8_T tenths){
 	char str[2];
-	debuginfo(1,1,1,1);
 
-	if(dTenths != tenths){
-		decode_singledigitnumber(tenths,str);
-		Wclear(&MyWatchScr[TTSSTR]);
-		WPrint(&MyWatchScr[TTSSTR], str);
-		dTenths = tenths;
-	}
+	//if(dTenths != tenths){
+	decode_singledigitnumber(tenths,str);
+	Wclear(&MyWatchScr[TTSSTR]);
+	WPrint(&MyWatchScr[TTSSTR], str);
+	dTenths = tenths;
+	//}
 }
 
 void show_tenth(){
@@ -140,7 +139,7 @@ void switchMode(State state){
 	switch(state){
 		case StopWatch:
 			actual_mode = StopWatch;
-			if(showTenths == 1){
+			if(showTenths == 0){
 				show_tenth();
 			}
 			if(showSeconds == 0){
@@ -187,6 +186,7 @@ void update_interface(State state, uint8_T hours, uint8_T minutes, uint8_T secon
 		draw_seconds(seconds);
 	if(showTenths == 1)
 		draw_tenths(tenths);
+
 }
 
 

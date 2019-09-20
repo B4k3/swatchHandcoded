@@ -24,10 +24,11 @@ bool_t timeset_status,alarm_status;
 
 /*Entry state*/
 void Swatch_Entry(Swatch *me){
-    stopwatch_hours = 0;
-    stopwatch_minutes = 0;
-    stopwatch_seconds = 0;
-    stopwatch_tenths = 0;
+    me->swatch_state = Stopped;
+       stopwatch_hours = 0;
+       stopwatch_minutes = 0;
+       stopwatch_seconds = 0;
+       stopwatch_tenths = 0;
 }
 
 
@@ -107,12 +108,11 @@ void time_count(Swatch *me) {
 				}
 			}
 	}
-	if(me->swatch_state == Running){
-		d_stopwatch_hours = stopwatch_hours;
-		d_stopwatch_minutes = stopwatch_minutes;
-		d_stopwatch_seconds = stopwatch_seconds;
-		d_stopwatch_tenths = stopwatch_tenths;
-	}
+	d_stopwatch_hours = stopwatch_hours;
+	d_stopwatch_minutes = stopwatch_minutes;
+	d_stopwatch_seconds = stopwatch_seconds;
+	d_stopwatch_tenths = stopwatch_tenths;
+
 }
 
 void time_set_plus(){
